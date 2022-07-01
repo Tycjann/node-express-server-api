@@ -42,12 +42,12 @@ const OrderTicketForm = () => {
       dispatch(addSeatRequest(order)).then(
         dispatch(loadSeatsRequest())
       );
-      // setOrder({
-      //   client: '',
-      //   email: '',
-      //   day: 1,
-      //   seat: '',
-      // });
+      setOrder({
+        client: '',
+        email: '',
+        day: 1,
+        seat: '',
+      });
       setIsError(false);
     } else {
       setIsError(true);
