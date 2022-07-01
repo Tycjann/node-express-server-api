@@ -10,7 +10,7 @@ const seatsRoutes = require('./routes/seats.routes');
 
 // ? Greg: Ja to dobrze robię? 
 const corsOptions = {
-  "origin": "http://localhost:8000/", //origin sets domains that we approve
+  "origin": "http://localhost:3000", //origin sets domains that we approve
   "methods": "GET,POST", //we allow only GET and POST methods
 }
 

@@ -32,17 +32,29 @@ router.route('/seats/').post((req, res) => {
   const db = database.seats;
   const { day, seat, client, email } = req.body;
 
-  if (performer && genre && price && day && image) {
-    res.json({ message: 'Save' });
-    const obj = {
-      id: uuidv4(),
-      day: day,
-      seat: seat,
-      client: client,
-      email: email,
-    };
+  if (day && seat && client && email) {
 
-    db.push(obj);
+    const results = db.find(obj => {
+      return (obj.day == day && obj.seat == seat);
+    })
+
+    if (!results) {
+      res.json({ message: 'Save' });
+      const obj = {
+        id: uuidv4(),
+        day: day,
+        seat: seat,
+        client: client,
+        email: email,
+      };
+      db.push(obj);
+    }
+    else {
+      res.status(500);
+      res.json({ message: 'The slot is already taken...' });
+      // console.log('The slot is already taken...');
+      // console.log(db);
+    }
   }
   else {
     res.json({ message: 'You can\'t leave fields empty!' });
