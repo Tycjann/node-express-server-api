@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '/client/build')));
 
 // import routes
 const testimonialsRoutes = require('./routes/testimonials.routes');
@@ -20,15 +24,19 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/api', testimonialsRoutes); // add post routes to server
-app.use('/api', concertsRoutes); // add user routes to server
-app.use('/api', seatsRoutes); // add user routes to server
+app.use('/api', testimonialsRoutes); // add testimonials routes to server
+app.use('/api', concertsRoutes); // add concerts routes to server
+app.use('/api', seatsRoutes); // add seats routes to server
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/client/build/index.html'));
+});
 
 // Endpoint: not found pages
 app.use((req, res) => {
   if (res.status(404)) res.json({ message: '404: Page not found!' });
 })
 
-app.listen(8000, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log('Server is running on port: 8000');
 });
