@@ -1,11 +1,36 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const socket = require('socket.io');
 
 const app = express();
 
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
+
+const server = app.listen(process.env.PORT || 8000, () => {
+  console.log('Server is running on port: 8000');
+});
+
+// Websocket
+// const io = socket(server);
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000"
+    // origin: ['http://localhost:*', 'http://anotherdomain.com:*'],
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('ConnectNew socket!');
+});
+
+
 
 // import routes
 const testimonialsRoutes = require('./routes/testimonials.routes');
@@ -36,7 +61,3 @@ app.get('*', (req, res) => {
 app.use((req, res) => {
   if (res.status(404)) res.json({ message: '404: Page not found!' });
 })
-
-app.listen(process.env.PORT || 8000, () => {
-  console.log('Server is running on port: 8000');
-});

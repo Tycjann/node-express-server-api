@@ -1,13 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Progress, Alert } from 'reactstrap';
 import { getSeats, loadSeatsRequest, getRequests } from '../../../redux/seatsRedux';
 import './SeatChooser.scss';
 
+import io from 'socket.io-client';
+// export const API_URL = (process.env.NODE_ENV === 'production') ? '/api' : 'http://localhost:8000/api';
+
 const SeatChooser = ({ chosenDay, chosenSeat, updateSeat }) => {
   const dispatch = useDispatch();
   const seats = useSelector(getSeats);
   const requests = useSelector(getRequests);
+  const [socket, setSocket] = useState();
+  // console.log('socket:', socket);
+
+  useEffect(() => {
+    const SERVER_URL = (process.env.NODE_ENV === 'production') ? '' : 'http://localhost:8000';
+    const socket = io(SERVER_URL);
+    
+    setSocket(socket);
+
+    return () => socket.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setSocket]);
   
   useEffect(() => {
     dispatch(loadSeatsRequest());

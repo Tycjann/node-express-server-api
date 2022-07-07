@@ -48,6 +48,9 @@ router.route('/seats/').post((req, res) => {
         email: email,
       };
       db.push(obj);
+
+      // websocket
+      req.io.emit('seatsUpdated', db);
     }
     else {
       res.status(500);
