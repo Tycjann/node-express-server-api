@@ -27,7 +27,7 @@ const io = socket(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log('ConnectNew socket!');
+  console.log('Connect - new socket!');
 });
 
 
