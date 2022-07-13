@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const socket = require('socket.io');
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -29,8 +30,6 @@ const io = socket(server, {
 io.on('connection', (socket) => {
   console.log('Connect - new socket!');
 });
-
-
 
 // import routes
 const testimonialsRoutes = require('./routes/testimonials.routes');
@@ -61,3 +60,12 @@ app.get('*', (req, res) => {
 app.use((req, res) => {
   if (res.status(404)) res.json({ message: '404: Page not found!' });
 })
+
+// connects our backend code with the database
+mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+
+db.once('open', () => {
+  console.log('Connected to the database');
+});
+db.on('error', err => console.log('Error ' + err));
