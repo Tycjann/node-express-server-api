@@ -4,8 +4,8 @@ const concertsSchema = new mongoose.Schema({
 
   performer: { type: String, required: true, ref: 'Performer' },
   genre: { type: String, required: true, ref: 'Genre' },
-  price: { type: Number, required: true },
-  day: { type: Number, required: true },
+  price: { type: String, required: true },
+  day: { type: String, required: true },
   image: { type: String, required: true }
 },
   {

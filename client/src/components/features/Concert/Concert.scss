@@ -71,6 +71,14 @@
   &:hover .concert__image-container__img {
     transform: scale(1.1);
   }
+
+  &__info__tickets {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+  }
 }
 
 @media (max-width: 768px) {

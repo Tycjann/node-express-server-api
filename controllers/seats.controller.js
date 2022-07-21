@@ -47,7 +47,8 @@ exports.addOne = async (req, res) => {
       await newSeat.save();
 
       // websocket
-      await req.io.emit('seatsUpdated', db);
+      // req.io.emit('seatsUpdated', db);
+      // await req.io.emit('seatsUpdated', db);
 
       res.json({ message: 'OK' });
 

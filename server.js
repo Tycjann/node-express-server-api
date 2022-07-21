@@ -3,8 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const app = express();
+
+app.use(helmet());
 
 app.use((req, res, next) => {
   req.io = io;
@@ -27,16 +30,11 @@ const io = socket(server, {
   }
 });
 
-io.on('connection', (socket) => {
-  console.log('Connect - new socket!');
-});
-
 // import routes
 const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 
-// ? Greg: Ja to dobrze robię? 
 const corsOptions = {
   "origin": "http://localhost:3000", //origin sets domains that we approve
   "methods": "GET,POST", //we allow only GET and POST methods
@@ -62,10 +60,28 @@ app.use((req, res) => {
 })
 
 // connects our backend code with the database
-mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb+srv://DB_USER:DB_PASSWORD@node-express-server-api.pjwrm.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+// const db = mongoose.connection;
+
+const NODE_ENV = process.env.NODE_ENV;
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+let dbURI = '';
+
+if (NODE_ENV === 'production') dbURI = 'mongodb+srv://DB_USER:DB_PASSWORD@node-express-server-api.pjwrm.mongodb.net/?retryWrites=true&w=majority';
+else if (NODE_ENV === 'test') dbURI = 'mongodb://localhost:27017/NewWaveDBtest';
+else dbURI = 'mongodb://localhost:27017/NewWaveDB';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 db.once('open', () => {
   console.log('Connected to the database');
 });
 db.on('error', err => console.log('Error ' + err));
+
+io.on('connection', (socket) => {
+  console.log('Connect - new socket!');
+});
+
+module.exports = server;

@@ -32,7 +32,15 @@ export const loadConcertsRequest = () => {
     try {
 
       let res = await axios.get(`${API_URL}/concerts`);
+      // let freeSeats = await axios.get(`${API_URL}/concerts/seats/1`);
+      // console.log('freeSeats:', freeSeats.data.freeSeats);
+
+      // res.freeSeats = freeSeats.data.freeSeats;
+
+      // res.data.freeSeats = freeSeats.data.freeSeats;
+
       // await new Promise((resolve, reject) => setTimeout(resolve, 2000));
+      console.log('dat:', res.data);
       dispatch(loadConcerts(res.data));
       dispatch(endRequest());
 

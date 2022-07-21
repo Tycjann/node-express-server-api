@@ -1,15 +1,23 @@
 {
   "dependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "mocha": "^10.0.0",
+    "mongo-sanitize": "^1.1.0",
     "mongoose": "^6.4.4",
+    "onchange": "^7.1.0",
     "reactstrap": "^9.1.1",
     "socket.io": "^4.5.1",
     "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "nodemon server.js",
-    "build": "cd client && npm install && npm run build"
+    "build": "cd client && npm install && npm run build",
+    "test": "set NODE_ENV=test&& mocha \"./{,!(node_modules|client)/**/}*.test.js\"",
+    "test:watch": "onchange \"./**/*.js\" -i -k -- npm test"
   },
   "devDependencies": {
     "nodemon": "^2.0.18"
