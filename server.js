@@ -69,7 +69,7 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 let dbURI = '';
 
-if (NODE_ENV === 'production') dbURI = 'mongodb+srv://' + DB_USER + ':' + DB_PASSWORD + '@node-express-server-api.pjwrm.mongodb.net/?retryWrites=true&w=majority';
+if (NODE_ENV === 'production') dbURI = 'mongodb+srv://DB_USER:DB_PASSWORD@node-express-server-api.pjwrm.mongodb.net/?retryWrites=true&w=majority';
 else if (NODE_ENV === 'test') dbURI = 'mongodb://localhost:27017/NewWaveDBtest';
 else dbURI = 'mongodb://localhost:27017/NewWaveDB';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
