@@ -59,11 +59,6 @@ app.use((req, res) => {
   if (res.status(404)) res.json({ message: '404: Page not found!' });
 })
 
-// connects our backend code with the database
-// mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true, useUnifiedTopology: true });
-// mongoose.connect('mongodb+srv://DB_USER:DB_PASSWORD@node-express-server-api.pjwrm.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
-// const db = mongoose.connection;
-
 const NODE_ENV = process.env.NODE_ENV;
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
@@ -74,6 +69,8 @@ else if (NODE_ENV === 'test') dbURI = 'mongodb://localhost:27017/NewWaveDBtest';
 else dbURI = 'mongodb://localhost:27017/NewWaveDB';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
+
+console.log('dbURI:', dbURI);
 
 db.once('open', () => {
   console.log('Connected to the database');

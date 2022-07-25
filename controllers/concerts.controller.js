@@ -4,31 +4,69 @@ const Performer = require('../models/performer.model.js');
 const Genre = require('../models/genre.model.js');
 const sanitize = require('mongo-sanitize');
 
+// exports.getAll = async (req, res) => {
+//   try {
+
+//     const findConcerts = await Concert.find().populate('performer').populate('genre');
+
+//     const freeSeats = async (day) => {
+
+//       const totalSeatsOnConcert = 50;
+//       const seats = await Seat.find({ day: day });
+//       const how = totalSeatsOnConcert - seats.length;
+//       console.log('seats.length:', how);
+//       return how;
+
+//     }
+//     // const findConcertsNew = findConcerts.map(async (data) => {
+//     //   const ticket = await freeSeats(data._doc.day);
+//     //   // return ({ ...data._doc, ticket: ticket })
+//     //   return ({ ...data._doc, ticket })
+//     // });
+
+//     const findConcertsNew = findConcerts.map((data) => ({ ...data._doc, ticket: freeSeats(data._doc.day) }));
+//     res.json(findConcertsNew);
+
+//     // console.log('findConcertsNew:', findConcertsNew);
+
+//   }
+//   catch (err) {
+//     console.log(err);
+//     res.status(500).json({ message: err });
+//   }
+// };
+
+// From Greg
 exports.getAll = async (req, res) => {
   try {
+    const [concerts, seats] = await Promise.all([
+      await Concert.find().populate('performer').populate('genre'),
+      await Seat.find()
+    ])
 
-    const findConcerts = await Concert.find().populate('performer').populate('genre');
+    const calculatedSeats = seats.reduce((result, seat) => {
+      // if (result[seat.day]) {
+      //   result[seat.day]++
+      // } else {
+      //   result[seat.day] = 1
+      // }
 
-    const freeSeats = async (day) => {
-      
-      const totalSeatsOnConcert = 50;
-      const seats = await Seat.find({ day: day });
-      const how = totalSeatsOnConcert - seats.length;
-      console.log('seats.length:', how);
-      return how;
+      result[seat.day] = (result[seat.day] || 0) + 1;
 
+      return result
+    }, {})
+
+    const freeSeats = (day) => {
+      return 50 - calculatedSeats[day]
     }
-    // const findConcertsNew = findConcerts.map(async (data) => {
-    //   const ticket = await freeSeats(data._doc.day);
-    //   // return ({ ...data._doc, ticket: ticket })
-    //   return ({ ...data._doc, ticket })
-    // });
-    
-    const findConcertsNew = findConcerts.map((data) => ({ ...data._doc, ticket: freeSeats(data._doc.day) }));
-    res.json(findConcertsNew);
-    
-    console.log('findConcertsNew:', findConcertsNew);
 
+    const concertsWithSeats = concerts.map(concert => ({
+      ...concert._doc,
+      freeSeats: freeSeats(concert.day)
+    }))
+
+    res.json(concertsWithSeats);
+    console.log('concertsWithSeats:', concertsWithSeats);
   }
   catch (err) {
     console.log(err);
@@ -162,20 +200,14 @@ exports.getByDay = async (req, res) => {
 
 exports.getPriceMinMax = async (req, res) => {
   try {
-    // console.log('req.params.price_min:', req.params.price_min);
-    // console.log('req.params.price_max:', req.params.price_max);
-    // req.params.price_min = 21;
-    // req.params.price_max = 25;
-    // res.json(await Concert.find({ $and: [{ price: { $gte: req.params.price_min } }, { price: { $lte: req.params.price_max } }] }).populate('performer').populate('genre'));
-    // res.json(await Concert.find({ price: { $gte: req.params.price_min, $lte: req.params.price_max } }).populate('performer').populate('genre'));
+    // console.log('req.params.price_min:', req.params.price_min, typeof req.params.price_min);
+    // console.log('req.params.price_max:', req.params.price_max, typeof req.params.price_max);
+
     res.json(await Concert.find(
-      { 
-        $or: [
-          { price: { $gt: req.params.price_min} },
-          { price: { $lt: req.params.price_max } },
-          { price: { $eq: req.params.price_min } },
-          { price: { $eq: req.params.price_max } }
-          // { $and: [{price: { $gt: req.params.price_min}}, {price: {$lte: req.params.price_max} }] }
+      {
+        $and: [
+          { price: { $gte: req.params.price_min } },
+          { price: { $lte: req.params.price_max } }
         ]
       }).populate('performer').populate('genre'));
   }
@@ -190,8 +222,8 @@ exports.getFreeSeats = async (req, res) => {
     const totalSeatsOnConcert = 50;
     const seats = await Seat.find({ day: req.params.day });
     const freeSeats = totalSeatsOnConcert - seats.length;
-    
-    res.json({freeSeats: freeSeats});
+
+    res.json({ freeSeats: freeSeats });
   }
   catch (err) {
     console.log(err);

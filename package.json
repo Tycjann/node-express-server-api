@@ -3,6 +3,7 @@
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "express": "^4.18.1",
     "helmet": "^5.1.0",
     "mocha": "^10.0.0",
@@ -16,7 +17,7 @@
   "scripts": {
     "start": "nodemon server.js",
     "build": "cd client && npm install && npm run build",
-    "test": "set NODE_ENV=test&& mocha \"./{,!(node_modules|client)/**/}*.test.js\"",
+    "test": "cross-env NODE_ENV=test mocha \"./{,!(node_modules|client)/**/}*.test.js\"",
     "test:watch": "onchange \"./**/*.js\" -i -k -- npm test"
   },
   "devDependencies": {

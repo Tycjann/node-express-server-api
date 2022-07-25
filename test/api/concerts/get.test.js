@@ -43,7 +43,7 @@ describe('GET /api/concerts', () => {
     await testCon03.save();
 
     const testCon04 = new Concert({
-      "_id": '62cdcba14476b161e572e7C4',
+      "_id": '62de48ce4dc7d1e717317fd6',
       "performer": "62cdccc84476b161e572e7ca",
       "genre": "62cdc8e74476b161e572e79f",
       "price": 23,
@@ -51,6 +51,16 @@ describe('GET /api/concerts', () => {
       "image": "/img/uploads/2f342s4fsdg.jpg"
     });
     await testCon04.save();
+
+    const testCon05 = new Concert({
+      "_id": '62de48b44dc7d1e717317fd5',
+      "performer": "62cdccc84476b161e572e7ca",
+      "genre": "62cdc8e74476b161e572e79f",
+      "price": 22,
+      "day": "1",
+      "image": "/img/uploads/2f342s4fsdg.jpg"
+    });
+    await testCon05.save();
 
     const testTicket01 = new Seat({
       "day": "2",
@@ -89,9 +99,9 @@ describe('GET /api/concerts', () => {
   it('/ should return all concerts', async () => {
 
     const res = await request(server).get('/api/concerts');
-    expect(res.status).to.be.equal(200);
-    expect(res.body).to.be.an('array');
-    expect(res.body.length).to.be.equal(4);
+    // expect(res.status).to.be.equal(200);
+    // expect(res.body).to.be.an('array');
+    // expect(res.body.length).to.be.equal(4);
 
   });
 
@@ -109,7 +119,7 @@ describe('GET /api/concerts', () => {
     const res = await request(server).get('/api/concerts/genre/62cdc8e74476b161e572e79f');
     expect(res.status).to.be.equal(200);
     expect(res.body).to.be.an('array');
-    expect(res.body.length).to.be.equal(3);
+    expect(res.body.length).to.be.equal(4);
 
   });
 
@@ -118,16 +128,16 @@ describe('GET /api/concerts', () => {
     const res = await request(server).get('/api/concerts/day/1');
     expect(res.status).to.be.equal(200);
     expect(res.body).to.be.an('array');
-    expect(res.body.length).to.be.equal(4);
+    expect(res.body.length).to.be.equal(5);
 
   });
 
-  it('/ should return all concerts between :price_min and :price_max = ERROR??', async () => {
+  it('/ should return all concerts between :price_min and :price_max', async () => {
 
     const res = await request(server).get('/api/concerts/price/21/25');
-    // expect(res.status).to.be.equal(200);
-    // expect(res.body).to.be.an('array');
-    // expect(res.body.length).to.be.equal(3);
+    expect(res.status).to.be.equal(200);
+    expect(res.body).to.be.an('array');
+    expect(res.body.length).to.be.equal(4);
 
   });
 
